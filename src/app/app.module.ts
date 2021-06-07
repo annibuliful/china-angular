@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -18,7 +18,12 @@ import { FormsModule } from '@angular/forms';
         return {
           cache: new InMemoryCache(),
           link: httpLink.create({
-            uri: 'http://localhost:3000/graphql',
+            // uri: 'http://localhost:3000/graphql',
+            uri: 'https://on-gull-79.hasura.app/v1/graphql',
+            headers: new HttpHeaders({
+              'x-hasura-admin-secret':
+                'iNmx7BrQGrnxOvrGkU3ZjzVwWyGmKDQ7TG1w7P2QF70vjaivJsMT2f1Cc0W9mkEr',
+            }),
           }),
         };
       },

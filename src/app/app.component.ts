@@ -4,7 +4,7 @@ import { IPost } from './@types/IPost';
 
 const apolloQuery = gql`
   query {
-    allPosts {
+    posts {
       id
       title
       views
@@ -13,8 +13,8 @@ const apolloQuery = gql`
 `;
 
 const apolloMutate = gql`
-  mutation create($title: String!, $views: Int!) {
-    createPost(title: $title, views: $views) {
+  mutation createPost($title: String!, $views: Int!) {
+    insert_posts_one(object: { title: $title, views: $views }) {
       id
       title
       views
@@ -33,12 +33,11 @@ export class AppComponent implements OnInit {
   listPosts: IPost[] = [];
 
   constructor(private apollo: Apollo) {
-    const a: any = {};
-    a['list'] = [];
-    a['list'].push('aaaaaaa');
-    a['list'].push('bbbbbbb');
-    console.log('[a data]', a);
-
+    // const a: any = {};
+    // a['list'] = [];
+    // a['list'].push('aaaaaaa');
+    // a['list'].push('bbbbbbb');
+    // console.log('[a data]', a);
     // KNOW ABOUT MUTABLE DATA
     // const b: any = Object.freeze({});
     // b['list'] = [];
@@ -46,16 +45,16 @@ export class AppComponent implements OnInit {
   }
   ngOnInit(): void {
     this.apollo
-      .watchQuery<{ allPosts: IPost[] }>({ query: apolloQuery })
+      .watchQuery<{ posts: IPost[] }>({ query: apolloQuery })
       .valueChanges.subscribe(({ data }) => {
-        console.log('[query]', data.allPosts);
-        this.listPosts = data.allPosts;
+        console.log('[query]', data.posts);
+        this.listPosts = data.posts;
       });
   }
 
   handleAddNewPost() {
     this.apollo
-      .mutate<{ createPost: IPost }>({
+      .mutate<{ insert_posts_one: IPost }>({
         mutation: apolloMutate,
         variables: {
           title: this.title,
@@ -63,8 +62,8 @@ export class AppComponent implements OnInit {
         },
       })
       .subscribe(({ data }) => {
-        console.log('[mutation]', data?.createPost);
-        this.listPosts = [...this.listPosts, data?.createPost as IPost];
+        console.log('[mutation]', data?.insert_posts_one);
+        this.listPosts = [...this.listPosts, data?.insert_posts_one as IPost];
       });
   }
 }
